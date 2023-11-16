@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import { FaShoppingCart } from "react-icons/fa";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import useAxios from "../hooks/useAxios";
+import useCart from "../hooks/useCart";
 
-const Navbar = (props) => {
+const Navbar = () => {
+  const axios = useAxios();
+  const { user, logOut } = useAuth();
+  const handleLogOut = () => {
+    try {
+      logOut();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const [curtItems] = useCart();
+
+  console.log(curtItems);
   const navlist = (
     <>
       <li>
@@ -16,7 +33,11 @@ const Navbar = (props) => {
         <Link to={"/order"}>Order</Link>
       </li>
       <li>
-        <Link to={"/login"}>Login</Link>
+        {user ? (
+          <Link onClick={handleLogOut}>Log out</Link>
+        ) : (
+          <Link to={"/login"}>Login</Link>
+        )}
       </li>
     </>
   );
@@ -53,7 +74,10 @@ const Navbar = (props) => {
         <ul className="menu menu-horizontal px-1">{navlist}</ul>
       </div>
       <div className="navbar-end">
-        <a className="btn">Button</a>
+        <Link className="btn btn-ghost">
+          <FaShoppingCart color="red" size={"2em"} />
+          <sup className="badge btn-xs badge-neutral ">{curtItems.length}</sup>
+        </Link>
       </div>
     </div>
   );

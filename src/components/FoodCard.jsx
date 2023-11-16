@@ -1,8 +1,34 @@
 import React from "react";
 import PropTypes from "prop-types";
+import useAuth from "../hooks/useAuth";
+import useAxios from "../hooks/useAxios";
+import useCart from "../hooks/useCart";
 
 const FoodCard = ({ item }) => {
-  const { name, image, price } = item;
+  const axios = useAxios();
+  const { user } = useAuth();
+  const [, refetch] = useCart();
+  const { _id, name, image, price } = item;
+  const handleAddToCurt = async () => {
+    if (user && user?.email) {
+      try {
+        const res = await axios.put(`/cart/${_id}`, {
+          ...item,
+          email: user.email,
+          quantity: 0,
+        });
+
+        console.log(res.data);
+        if (res.data.upsertedCount > 0) {
+          refetch();
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      alert("Please login first");
+    }
+  };
   return (
     <div className="card mt-10 mx-auto bg-base-100 shadow-xl">
       <figure>
@@ -13,9 +39,12 @@ const FoodCard = ({ item }) => {
        flex flex-col items-center text-center"
       >
         <h2 className="card-title">{name}</h2>
-        <p>If a dog chews shoes whose shoes does he choose?</p>
+        <p>${price}</p>
         <div className="card-actions justify-end">
-          <button className="btn btn-outline bg-neutral-200 border-0 border-b-4">
+          <button
+            onClick={handleAddToCurt}
+            className="btn btn-outline bg-neutral-200 border-0 border-b-4"
+          >
             Add To Cart
           </button>
         </div>
@@ -24,6 +53,8 @@ const FoodCard = ({ item }) => {
   );
 };
 
-FoodCard.propTypes = {};
+FoodCard.propTypes = {
+  item: PropTypes.object,
+};
 
 export default FoodCard;

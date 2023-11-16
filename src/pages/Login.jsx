@@ -3,27 +3,35 @@ import PropTypes from "prop-types";
 import {
   loadCaptchaEnginge,
   LoadCanvasTemplate,
-  LoadCanvasTemplateNoReload,
   validateCaptcha,
 } from "react-simple-captcha";
+import useAuth from "../hooks/useAuth";
+import { Link } from "react-router-dom";
 
 const Login = () => {
+  const { login } = useAuth();
   const captchaRef = useRef();
   const [disabled, setDisabled] = useState(true);
-  const login = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const form = e.target;
     const email = form.email.value;
     const password = form.password.value;
     console.log(email, password);
+    try {
+      const user = await login(email, password);
+      console.log(user);
+    } catch (err) {
+      console.log(err.message);
+    }
   };
 
   useEffect(() => {
     loadCaptchaEnginge(6);
   }, []);
   const handleValidateCaptcha = () => {
-    const value = captchaRef.current.value;
-    if (validateCaptcha(value)) {
+    const user_captcha_value = captchaRef.current.value;
+    if (validateCaptcha(user_captcha_value)) {
       setDisabled(false);
       console.log("captcha okay");
     } else {
@@ -38,11 +46,11 @@ const Login = () => {
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
           <div className="max-w-md mx-auto">
             <div>
-              <h1 className="text-2xl font-semibold">Login</h1>
+              <h1 className="text-2xl font-semibold my-5">Login</h1>
             </div>
             <div className="divide-y divide-gray-200">
               <form
-                onSubmit={login}
+                onSubmit={handleLogin}
                 className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
               >
                 <div className="relative">
@@ -103,7 +111,8 @@ const Login = () => {
                   </button>
                 </div>
               </form>
-            </div>
+            </div>{" "}
+            <Link to={"/signup"}>Create new account</Link>
           </div>
         </div>
       </div>
