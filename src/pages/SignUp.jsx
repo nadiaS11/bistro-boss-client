@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { useForm } from "react-hook-form";
 import logoPng from "../assets/others/logo.png";
 import useAuth from "../hooks/useAuth";
+import { updateProfile } from "firebase/auth";
+import { auth } from "../Authentications/fiebase.config";
 
 const SignUp = () => {
   const { userSignUp } = useAuth();
@@ -18,6 +20,11 @@ const SignUp = () => {
     try {
       const user = await userSignUp(data.email, data.password);
       console.log(user);
+      await updateProfile(auth.currentUser, {
+        displayName: data.name,
+        email: data.email,
+        // photoURL: data.photoURL
+      });
     } catch (err) {
       console.log(err);
     }

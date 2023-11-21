@@ -7,13 +7,14 @@ import {
   signOut,
 } from "firebase/auth";
 import { auth } from "./fiebase.config";
+import useAxiosPublic from "./../hooks/useAxiosPublic";
 
 export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const axiosPublic = useAxiosPublic();
   const userSignUp = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
@@ -28,14 +29,34 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        const userInfo = { email: currentUser.email };
+        const res = await axiosPublic.post("/jwt", userInfo);
+        console.log(res);
+        if (res.data.token) {
+          localStorage.setItem("token", res.data.token);
+        }
+      } else {
+        localStorage.removeItem("token");
+      }
+      if (currentUser) {
+        console.log(currentUser);
+        const res = await axiosPublic.put("/users", {
+          name: currentUser.displayName,
+          email: currentUser.email,
+          photo: currentUser.photoURL,
+        });
+        console.log(res.data);
+      }
+
       setLoading(false);
     });
     return () => {
       return unsubscribe();
     };
-  }, []);
+  }, [axiosPublic]);
 
   const authInfo = {
     user,
