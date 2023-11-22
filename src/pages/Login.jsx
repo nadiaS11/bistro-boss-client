@@ -96,7 +96,7 @@ const Login = () => {
                     placeholder="type the text above"
                   />
                   <button
-                    onClick={handleValidateCaptcha}
+                    onChange={handleValidateCaptcha}
                     className="bg-blue-400 text-white rounded-md px-2 my-1"
                   >
                     Validate

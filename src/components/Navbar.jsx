@@ -17,9 +17,9 @@ const Navbar = () => {
       console.log(err);
     }
   };
-  const [curtItems] = useCart();
+  const [cart] = useCart();
 
-  console.log(curtItems);
+  console.log(cart);
   const navlist = (
     <>
       <li>
@@ -81,7 +81,7 @@ const Navbar = () => {
       <div className="navbar-end">
         <Link className="btn btn-ghost">
           <FaShoppingCart color="red" size={"2em"} />
-          <sup className="badge btn-xs badge-neutral ">{curtItems.length}</sup>
+          <sup className="badge btn-xs badge-neutral ">{cart.length}</sup>
         </Link>
       </div>
     </div>
