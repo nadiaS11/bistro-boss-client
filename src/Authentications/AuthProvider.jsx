@@ -31,27 +31,26 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+
       if (currentUser) {
         const userInfo = { email: currentUser.email };
         const res = await axiosPublic.post("/jwt", userInfo);
         console.log(res);
         if (res.data.token) {
           localStorage.setItem("token", res.data.token);
+          setLoading(false);
+
+          const userRes = await axiosPublic.put("/users", {
+            name: currentUser.displayName,
+            email: currentUser.email,
+            photo: currentUser.photoURL,
+          });
+          console.log(userRes.data);
         }
       } else {
         localStorage.removeItem("token");
+        setLoading(false);
       }
-      if (currentUser) {
-        console.log(currentUser);
-        const res = await axiosPublic.put("/users", {
-          name: currentUser.displayName,
-          email: currentUser.email,
-          photo: currentUser.photoURL,
-        });
-        console.log(res.data);
-      }
-
-      setLoading(false);
     });
     return () => {
       return unsubscribe();

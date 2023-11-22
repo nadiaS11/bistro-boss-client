@@ -6,12 +6,15 @@ import {
   validateCaptcha,
 } from "react-simple-captcha";
 import useAuth from "../hooks/useAuth";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { login } = useAuth();
   const captchaRef = useRef();
-  const [disabled, setDisabled] = useState(true);
+  const [disable, setDisable] = useState(true);
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -21,6 +24,7 @@ const Login = () => {
     try {
       const user = await login(email, password);
       console.log(user);
+      navigate(location?.state ? location.state : "/");
     } catch (err) {
       console.log(err.message);
     }
@@ -31,11 +35,11 @@ const Login = () => {
   }, []);
   const handleValidateCaptcha = () => {
     const user_captcha_value = captchaRef.current.value;
-    if (validateCaptcha(user_captcha_value)) {
-      setDisabled(false);
+    if (validateCaptcha(user_captcha_value, false)) {
+      setDisable(false);
       console.log("captcha okay");
     } else {
-      console.log("captcha  unmatched");
+      setDisable(true);
     }
   };
 
@@ -89,25 +93,21 @@ const Login = () => {
                   <LoadCanvasTemplate />
                   <input
                     ref={captchaRef}
+                    onChange={handleValidateCaptcha}
                     id="captcha"
                     name="captcha"
                     type="text"
                     className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
                     placeholder="type the text above"
                   />
-                  <button
-                    onChange={handleValidateCaptcha}
-                    className="bg-blue-400 text-white rounded-md px-2 my-1"
-                  >
-                    Validate
-                  </button>
                 </div>
                 <div className="relative">
                   <button
-                    disabled={disabled}
-                    className="bg-blue-500 text-white rounded-md px-2 py-1"
+                    type="submit"
+                    disabled={disable}
+                    className="btn bg-blue-500 text-white rounded-md px-2 py-1"
                   >
-                    Submit
+                    Login
                   </button>
                 </div>
               </form>

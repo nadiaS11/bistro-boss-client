@@ -14,6 +14,8 @@ import PrivateRoute from "./PrivateRoute";
 import AdminRoute from "./AdminRoute";
 import AddItem from "../pages/dashboard route/AddItem";
 import Payments from "../pages/dashboard route/Payments";
+import UserHome from "../pages/dashboard route/userHome";
+import AdminHome from "../pages/dashboard route/AdminHome";
 
 const router = createBrowserRouter([
   {
@@ -29,27 +31,47 @@ const router = createBrowserRouter([
         element: <Menu />,
       },
       {
-        path: "/order/:category",
-        element: <Order />,
+        path: "/order/salad",
+        element: (
+          <PrivateRoute>
+            <Order />
+          </PrivateRoute>
+        ),
       },
       {
-        path: "/login",
+        path: "login",
         element: <Login />,
       },
       {
-        path: "/signup",
+        path: "signup",
         element: <SignUp />,
       },
     ],
   },
   {
-    path: "/dashboard",
+    path: "dashboard",
     element: (
       <PrivateRoute>
         <Dashboard />
       </PrivateRoute>
     ),
     children: [
+      {
+        path: "user",
+        element: (
+          <PrivateRoute>
+            <UserHome />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "admin",
+        element: (
+          <AdminRoute>
+            <AdminHome />
+          </AdminRoute>
+        ),
+      },
       {
         path: "my-cart",
         element: (

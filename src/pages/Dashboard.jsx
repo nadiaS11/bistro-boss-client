@@ -44,7 +44,7 @@ const Dashboard = () => {
                 <>
                   {" "}
                   <NavLink
-                    to={"/dashboard"}
+                    to={"/dashboard/admin"}
                     className="relative flex cursor-pointer space-x-2 rounded-md py-4 px-10 text-black hover:bg-[#be8938]"
                   >
                     <span>
@@ -97,7 +97,10 @@ const Dashboard = () => {
               ) : (
                 <>
                   {" "}
-                  <NavLink className="relative flex cursor-pointer space-x-2 rounded-md py-4 px-10 text-black hover:bg-[#be8938]">
+                  <NavLink
+                    to={"/dashboard/user"}
+                    className="relative flex cursor-pointer space-x-2 rounded-md py-4 px-10 text-black hover:bg-[#be8938]"
+                  >
                     <span>
                       {" "}
                       <FaHome size={"1.5rem"} />

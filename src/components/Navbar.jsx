@@ -6,9 +6,11 @@ import { FaShoppingCart } from "react-icons/fa";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import useAxios from "../hooks/useAxios";
 import useCart from "../hooks/useCart";
+import useAdmin from "../hooks/useAdmin";
 
 const Navbar = () => {
   const axios = useAxios();
+  const [isAdmin] = useAdmin();
   const { user, logOut } = useAuth();
   const handleLogOut = () => {
     try {
@@ -30,11 +32,15 @@ const Navbar = () => {
         <Link to={"/menu"}>Our Menu</Link>
       </li>
       <li>
-        <Link to={"/order"}>Order</Link>
+        <Link to={"/order/salad "}>Order</Link>
       </li>
       {user && user.email && (
         <li>
-          <Link to={"/dashboard"}>Dashboard</Link>
+          <Link
+            to={user ? (isAdmin ? "/dashboard/admin" : "/dashboard/user") : ""}
+          >
+            Dashboard
+          </Link>
         </li>
       )}
       <li>

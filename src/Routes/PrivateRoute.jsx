@@ -4,15 +4,15 @@ import useAuth from "../hooks/useAuth";
 import { Navigate, useLocation } from "react-router-dom";
 
 const PrivateRoute = ({ children }) => {
-  const { user, logOut, loading } = useAuth();
+  const { user, loading } = useAuth();
   const location = useLocation();
   if (loading) {
-    return <progress className="progress w-56"></progress>;
+    return <progress className="progress w-56 "></progress>;
   }
-  if (user) {
-    return children;
+  if (!user) {
+    return <Navigate state={location.pathname} to="/login"></Navigate>;
   }
-  return <Navigate to={"/login"} state={location.pathname}></Navigate>;
+  return children;
 };
 
 PrivateRoute.propTypes = {};
